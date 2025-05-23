@@ -4,6 +4,7 @@
     <mapping directory="$PROJECT_DIR$/Integration/integration" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Notification" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Shared-Common" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/authServer/authserver" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/authserver" vcs="Git" />
   </component>
 </project>
