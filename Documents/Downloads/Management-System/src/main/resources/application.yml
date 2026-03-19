@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Management_System
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: smartcode
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+logging:
+  level:
+    org.springframework: INFO

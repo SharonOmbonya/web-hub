@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/web_hub
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: smartcode
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: stanleyshadrack213@gmail.com
+    password: hozpltwxbixcenpn
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+
+logging:
+  level:
+    org.springframework: INFO
+
+application:
+  name: auth
+
+profiles:
+  active: dev
