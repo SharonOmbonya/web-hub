@@ -1,6 +1,7 @@
 package com.web_hub.web_hub.auth;
 
 
+import com.web_hub.web_hub.admin.dto.*;
 import com.web_hub.web_hub.dto.*;
 import com.web_hub.web_hub.emailService.EmailService;
 import com.web_hub.web_hub.exception.AuthException;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -133,6 +135,110 @@ public class AuthService {
         return issueTokens(user);
     }
 
+
+    /* =========================================================
+       GET USERS
+       ========================================================= */
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    /* =========================================================
+       UPDATE USER
+       ========================================================= */
+    public UserResponse updateUser(Long id, UpdateUserRequest request) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AuthException("User not found"));
+
+        if (request.email() != null) {
+            user.setEmail(request.email());
+        }
+
+        if (request.role() != null) {
+            user.setRole(request.role());
+        }
+
+        if (request.active() != null) {
+            user.setActive(request.active());
+        }
+
+        userRepository.save(user);
+
+        return mapToResponse(user);
+    }
+
+    /* =========================================================
+       SUSPEND USER
+       ========================================================= */
+    public void suspendUser(Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AuthException("User not found"));
+
+        user.setActive(false);
+        userRepository.save(user);
+    }
+
+    /* =========================================================
+       RESET PASSWORD
+       ========================================================= */
+    public void resetPassword(Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AuthException("User not found"));
+
+        user.setPassword(passwordEncoder.encode("123456"));
+        userRepository.save(user);
+    }
+
+    /* =========================================================
+       DEPARTMENTS
+       ========================================================= */
+    public String getDepartments() {
+        return "Departments fetched";
+    }
+
+    public void createDepartment(DepartmentRequest request) {
+        // you can implement DB later
+    }
+
+    /* =========================================================
+       ASSETS
+       ========================================================= */
+    public String getAssets() {
+        return "Assets fetched";
+    }
+
+    /* =========================================================
+       AUDIT LOGS
+       ========================================================= */
+    public String getAuditLogs() {
+        return "Audit logs fetched";
+    }
+
+    /* =========================================================
+       ANNOUNCEMENTS
+       ========================================================= */
+    public void sendAnnouncement(AnnouncementRequest request) {
+        // implement later
+    }
+
+    /* =========================================================
+       MAPPER
+       ========================================================= */
+    private UserResponse mapToResponse(User user) {
+        return new UserResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getUsername(),
+                user.getRole(),
+                user.isActive()
+        );
+    }
     /* =========================================================
        LOGOUT
        ========================================================= */

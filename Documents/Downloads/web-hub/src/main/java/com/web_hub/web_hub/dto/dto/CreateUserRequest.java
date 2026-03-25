@@ -1,4 +1,4 @@
-package com.web_hub.web_hub.admin.dto;
+package com.web_hub.web_hub.dto.dto;
 
 import com.web_hub.web_hub.role.Role;
 
