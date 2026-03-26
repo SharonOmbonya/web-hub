@@ -29,7 +29,16 @@ public class SecurityConfig {
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/login",
+                                "/api/auth/register",
+                                "/api/auth/refresh-token",
+                                "/api/auth/forgot-password",
+                                "/api/auth/reset-password",
+                                "/api/auth/verify-email"
+                        ).permitAll()
+                        .requestMatchers("/api/auth/users/**",
+                                "/api/admin/**").hasAuthority("ROLE_ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter,

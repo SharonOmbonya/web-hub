@@ -63,6 +63,13 @@ public class AuthController {
         return ResponseEntity.ok("Registration successful");
     }
 
+    @PostMapping
+    public ResponseEntity<UserResponse> createUser(
+            @RequestBody CreateUserRequest request
+    ) {
+        return ResponseEntity.ok(authService.createUser(request));
+    }
+
 
     /* ================= GET USERS ================= */
 

@@ -71,7 +71,32 @@ public class AuthService {
 
         userRepository.save(user);
     }
+    public UserResponse createUser(CreateUserRequest request) {
 
+        userRepository.findByEmailIgnoreCase(request.email())
+                .ifPresent(u -> {
+                    throw new RuntimeException("User already exists");
+                });
+
+        User user = User.builder()
+                .username(request.email()) //
+                .email(request.email().trim())
+                .password(passwordEncoder.encode(request.password()))
+                .role(Role.valueOf(request.role().toUpperCase())) //
+                .active(true)
+                .forcePasswordChange(true)
+                .build();
+
+        userRepository.save(user);
+
+        return new UserResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getUsername(),
+                user.getRole(),
+                user.isActive()
+        );
+    }
     /* =========================================================
        LOGIN → SEND OTP
        ========================================================= */
@@ -273,7 +298,11 @@ public class AuthService {
                 )
         );
 
-        return AuthResponse.success(access, refresh);
+        return AuthResponse.builder()
+                .accessToken(access)
+                .refreshToken(refresh)
+                .firstLogin(user.isForcePasswordChange()) // ✅ ADD THIS
+                .build();
     }
 
     private String generateOtp() {

@@ -1,10 +1,18 @@
 package com.web_hub.web_hub.admin.dto;
 
-import com.web_hub.web_hub.role.Role;
+import jakarta.validation.constraints.NotBlank;
 
 public record CreateUserRequest(
+
+        @NotBlank
         String email,
+
+        @NotBlank
         String password,
-        String username,
-        Role role
+
+        @NotBlank
+        String role,
+
+        String username // ✅ added
+
 ) {}
