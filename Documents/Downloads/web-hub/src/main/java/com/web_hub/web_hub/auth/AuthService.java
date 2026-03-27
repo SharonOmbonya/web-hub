@@ -71,23 +71,33 @@ public class AuthService {
 
         userRepository.save(user);
     }
-    public UserResponse createUser(CreateUserRequest request) {
+        public UserResponse createUser(CreateUserRequest request) {
 
         userRepository.findByEmailIgnoreCase(request.email())
                 .ifPresent(u -> {
                     throw new RuntimeException("User already exists");
                 });
 
+        // 🔥 1. Generate invite token
+        String inviteToken = UUID.randomUUID().toString();
+
         User user = User.builder()
-                .username(request.email()) //
+                .username(request.email())
                 .email(request.email().trim())
-                .password(passwordEncoder.encode(request.password()))
-                .role(Role.valueOf(request.role().toUpperCase())) //
-                .active(true)
+                .password(passwordEncoder.encode("TEMP1234"))
+                .role(Role.valueOf(request.role().toUpperCase()))
+                .active(false) // ❗ NOT active until registration
+                .inviteToken(inviteToken)
+                .inviteExpiry(Instant.now().plus(1,ChronoUnit.DAYS))
                 .forcePasswordChange(true)
                 .build();
 
         userRepository.save(user);
+
+        // 🔥 2. Send email with link
+        String link = "http://localhost:3000/register?token=" + inviteToken;
+
+        emailService.sendOnboardingInvite(user.getEmail(), link);
 
         return new UserResponse(
                 user.getId(),
@@ -96,6 +106,34 @@ public class AuthService {
                 user.getRole(),
                 user.isActive()
         );
+
+    }
+
+    /* =========================================================
+   COMPLETE REGISTRATION (INVITE TOKEN)
+   ========================================================= */
+    public AuthResponse completeRegistration(String token, String password) {
+
+        User user = userRepository.findByInviteToken(token)
+                .orElseThrow(() -> new AuthException("Invalid or expired invite"));
+
+        if (user.getInviteExpiry() == null || user.getInviteExpiry().isBefore(Instant.now())) {
+            throw new AuthException("Invite expired");
+        }
+
+        user.setPassword(passwordEncoder.encode(password));
+        user.setPasswordSet(true);
+
+        user.setActive(true);
+        user.setApproved(true);
+
+        // clear invite after use
+        user.setInviteToken(null);
+        user.setInviteExpiry(null);
+
+        userRepository.save(user);
+
+        return issueTokens(user);
     }
     /* =========================================================
        LOGIN → SEND OTP
@@ -142,8 +180,10 @@ public class AuthService {
 
         user.setMfaOtp(null);
         user.setMfaOtpExpiry(null);
+        userRepository.save(user);
 
         return issueTokens(user);
+
     }
 
     /* =========================================================

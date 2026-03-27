@@ -52,6 +52,8 @@ public class User implements UserDetails {
 
     private Instant createdAt;
     private Instant updatedAt;
+    private String inviteToken;
+    private Instant inviteExpiry;
     // Refresh tokens
     private String refreshToken;
     private Instant refreshTokenExpiry;

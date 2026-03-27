@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -70,7 +71,15 @@ public class AuthController {
         return ResponseEntity.ok(authService.createUser(request));
     }
 
-
+    @PostMapping("/complete-registration")
+    public ResponseEntity<AuthResponse> completeRegistration(@RequestBody Map<String, String> request) {
+        return ResponseEntity.ok(
+                authService.completeRegistration(
+                        request.get("token"),
+                        request.get("password")
+                )
+        );
+    }
     /* ================= GET USERS ================= */
 
     @GetMapping("/users")

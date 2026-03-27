@@ -32,11 +32,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login",
                                 "/api/auth/register",
                                 "/api/auth/refresh-token",
+                                "/api/auth/verify-mfa",
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
-                                "/api/auth/verify-email"
+                                "/api/auth/verify-email",
+                                "/api/auth/complete-registration"
                         ).permitAll()
                         .requestMatchers("/api/auth/users/**",
+                                "/api/auth/**",
                                 "/api/admin/**").hasAuthority("ROLE_ADMIN")
 
                         .anyRequest().authenticated()
