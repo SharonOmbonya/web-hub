@@ -4,6 +4,7 @@ import com.web_hub.web_hub.config.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,12 +38,26 @@ public class SecurityConfig {
                                 "/api/auth/reset-password",
                                 "/api/auth/verify-email",
                                 "/api/auth/complete-registration"
+
                         ).permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/leaves").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/api/leaves/employee/**").authenticated()
+                                .requestMatchers("/api/payroll/**").authenticated()
+                                .requestMatchers("/api/performance/**",
+                                        "/api/headcount/**").authenticated()
+
+                                .requestMatchers("/api/leaves/*/approve").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers("/api/leaves/*/reject").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers("/api/leaves/status/**").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers("/api/employees/**").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/leaves").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/api/auth/users/**",
                                 "/api/auth/**",
-                                "/api/admin/**").hasAuthority("ROLE_ADMIN")
+                                "/api/admin/**"
+                               ).hasAuthority("ROLE_ADMIN")
 
                         .anyRequest().authenticated()
+
                 )
                 .addFilterBefore(jwtFilter,
                         UsernamePasswordAuthenticationFilter.class);

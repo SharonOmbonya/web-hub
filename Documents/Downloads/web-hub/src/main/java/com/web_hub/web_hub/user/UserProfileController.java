@@ -1,6 +1,6 @@
-package com.web_hub.web_hub.employeemodule.Employee;
+package com.web_hub.web_hub.user;
 
-import com.web_hub.web_hub.employeemodule.dto.EmployeeResponse;
+import com.web_hub.web_hub.employeemodule.dto.UserProfileResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/employee")
 @RequiredArgsConstructor
-public class EmployeeController {
+public class UserProfileController {
 
-    private final EmployeeService employeeService;
+    private final UserProfileService employeeService;
 
     @GetMapping("/me")
-    public ResponseEntity<EmployeeResponse> getMyProfile() {
+    public ResponseEntity<UserProfileResponse> getMyProfile() {
         return ResponseEntity.ok(employeeService.getMyProfile());
     }
 }

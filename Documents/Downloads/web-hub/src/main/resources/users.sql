@@ -1,12 +1,18 @@
-CREATE TABLE IF NOT EXISTS users
-(
-    user_id       BIGINT NOT NULL PRIMARY KEY,
-    email         VARCHAR(255) NOT NULL UNIQUE,
-    password      VARCHAR(255) NOT NULL,
-    full_name     VARCHAR(255) NOT NULL,
-    approved      BOOLEAN NOT NULL DEFAULT FALSE,
-    role_id       BIGINT NOT NULL,  -- Foreign key to roles table
-    created_at    TIMESTAMP NOT NULL,
-    updated_at    TIMESTAMP NULL,
-    FOREIGN KEY (role_id) REFERENCES roles(role_id)
+CREATE TABLE IF NOT EXISTS leaves (
+    id BIGSERIAL PRIMARY KEY,
+
+    user_id BIGINT NOT NULL,
+
+    type VARCHAR(50) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+
+    CONSTRAINT fk_leave_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE
 );

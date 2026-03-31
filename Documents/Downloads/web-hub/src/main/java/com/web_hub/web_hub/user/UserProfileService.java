@@ -1,23 +1,21 @@
-package com.web_hub.web_hub.employeemodule.Employee;
+package com.web_hub.web_hub.user;
 
-import com.web_hub.web_hub.employeemodule.dto.EmployeeResponse;
+import com.web_hub.web_hub.employeemodule.dto.UserProfileResponse;
 import com.web_hub.web_hub.exception.AuthException;
-import com.web_hub.web_hub.user.User;
-import com.web_hub.web_hub.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EmployeeService {
+public class UserProfileService {
 
     private final UserRepository userRepository;
 
-    public EmployeeResponse getMyProfile() {
+    public UserProfileResponse getMyProfile() {
         User user = getCurrentUser();
 
-        return new EmployeeResponse(
+        return new UserProfileResponse(
                 user.getId(),
                 user.getEmail(),
                 user.getUsername(),
