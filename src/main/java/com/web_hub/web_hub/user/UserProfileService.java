@@ -18,6 +18,13 @@ public class UserProfileService {
                 user.getId(),
                 user.getEmail(),
                 user.getUsername(),
+                user.getFirstName(),  // Added
+                user.getLastName(),   // Added
+                user.getJobTitle(),   // Added
+                user.getPhoneNumber(),// Added
+                user.getDepartment(), // Added
+                user.getLocation(),   // Added
+                user.getJoinDate(),   // Added
                 user.getRole(),
                 user.isActive()
         );

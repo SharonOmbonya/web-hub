@@ -1,4 +1,4 @@
-package com.web_hub.web_hub.config;
+package com.web_hub.web_hub.CorsConfig;
 
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.SignatureAlgorithm;

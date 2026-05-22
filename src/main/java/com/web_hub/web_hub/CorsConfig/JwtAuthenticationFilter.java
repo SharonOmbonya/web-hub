@@ -1,4 +1,4 @@
-package com.web_hub.web_hub.config;
+package com.web_hub.web_hub.CorsConfig;
 
 import com.web_hub.web_hub.jwt.JwtService;
 import jakarta.servlet.FilterChain;

@@ -7,5 +7,6 @@ public record UserResponse(
         String email,
         String username,
         Role role,
-        boolean active
+        boolean active,
+        String inviteToken
 ) {}

@@ -1,6 +1,5 @@
 package com.web_hub.web_hub.user;
 
-
 import com.web_hub.web_hub.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,6 +33,16 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    // --- NEW PROFILE FIELDS ---
+    private String firstName;
+    private String lastName;
+    private String jobTitle;
+    private String phoneNumber;
+    private String department;
+    private String location;
+    private LocalDate joinDate;
+    // --------------------------
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -41,6 +51,14 @@ public class User implements UserDetails {
     // MFA
     private String mfaOtp;
     private Instant mfaOtpExpiry;
+
+    // --- PASSWORD RESET FIELDS ---
+    private String resetOtp;
+    private Instant resetOtpExpiry;
+    private String resetToken;
+    private Instant resetTokenExpiry;
+    // -----------------------------
+
     private boolean approved;
     private boolean emailVerified;
     private boolean passwordSet;
@@ -54,6 +72,7 @@ public class User implements UserDetails {
     private Instant updatedAt;
     private String inviteToken;
     private Instant inviteExpiry;
+
     // Refresh tokens
     private String refreshToken;
     private Instant refreshTokenExpiry;
@@ -63,10 +82,9 @@ public class User implements UserDetails {
         return List.of(() -> "ROLE_" + role.name());
     }
 
-    // 👇 Decide what login uses
     @Override
     public String getUsername() {
-        return email; // or return username;
+        return email;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.web_hub.web_hub.config;
+package com.web_hub.web_hub.CorsConfig;
 
 import com.web_hub.web_hub.role.Role;
 import com.web_hub.web_hub.user.User;
@@ -56,7 +56,7 @@ public class AdminInitializer implements CommandLineRunner {
                 /* =========================
                    ONBOARDING (SYSTEM USER)
                 ========================= */
-                .onboardingCompleted(true)      // ❌ No onboarding required
+                .onboardingCompleted(true)
 
                 /* =========================
                    AUDIT / META
