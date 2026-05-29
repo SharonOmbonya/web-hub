@@ -3,12 +3,9 @@ package com.web_hub.web_hub.auth.api.controller;
 import com.web_hub.web_hub.admin.CreateUserRequest;
 import com.web_hub.web_hub.admin.UpdateUserRequest;
 import com.web_hub.web_hub.admin.UserResponse;
+import com.web_hub.web_hub.auth.api.dto.*;
 import com.web_hub.web_hub.auth.service.AuthService;
 import com.web_hub.web_hub.dto.*;
-import com.web_hub.web_hub.auth.api.dto.ForgotPasswordRequest;
-import com.web_hub.web_hub.auth.api.dto.ResetPasswordRequest;
-import com.web_hub.web_hub.auth.api.dto.SetupUserPasswordRequest;
-import com.web_hub.web_hub.auth.api.dto.VerifyResetOtpRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -112,13 +109,16 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("message", "User suspended"));
     }
 
-    @PatchMapping("/users/{id}/reset-password")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, String>> resetPassword(@PathVariable Long id) {
-        authService.resetPassword(id);
-        return ResponseEntity.ok(Map.of("message", "Password reset by admin"));
-    }
+    @PostMapping("/resend-otp")
+    public ResponseEntity<Map<String, String>> resendOtp(
+            @Valid @RequestBody ResendOtpRequest request
+    ) {
+        authService.resendOtp(request);
 
+        return ResponseEntity.ok(
+                Map.of("message", "OTP resent successfully")
+        );
+    }
     /* ================= PROTECTED USER ENDPOINTS ================= */
 
     @PostMapping("/logout")

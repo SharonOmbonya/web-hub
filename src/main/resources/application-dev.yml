@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/web_hub
     username: postgres
-    password: 1234567@
+    password: smartcode
     driver-class-name: org.postgresql.Driver
 
   jpa:
