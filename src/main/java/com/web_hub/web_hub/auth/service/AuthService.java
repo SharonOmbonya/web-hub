@@ -4,6 +4,7 @@ import com.web_hub.web_hub.admin.CreateUserRequest;
 import com.web_hub.web_hub.admin.UpdateUserRequest;
 import com.web_hub.web_hub.admin.UserResponse;
 import com.web_hub.web_hub.auth.api.dto.ForgotPasswordRequest;
+import com.web_hub.web_hub.auth.api.dto.ResendOtpRequest;
 import com.web_hub.web_hub.auth.api.dto.ResetPasswordRequest;
 import com.web_hub.web_hub.auth.api.dto.VerifyResetOtpRequest;
 import com.web_hub.web_hub.dto.*;
@@ -327,6 +328,24 @@ public class AuthService {
 
         user.setPassword(passwordEncoder.encode("123456"));
         userRepository.save(user);
+    }
+
+    public void resendOtp(ResendOtpRequest request) {
+        User user = userRepository.findByEmailIgnoreCase(request.email())
+                .orElseThrow(() -> new AuthException("User not found"));
+
+        if (!user.isActive()) {
+            throw new AuthException("Account disabled");
+        }
+
+        String otp = generateOtp();
+
+        user.setMfaOtp(otp);
+        user.setMfaOtpExpiry(Instant.now().plus(5, ChronoUnit.MINUTES));
+
+        userRepository.save(user);
+
+        emailService.sendLoginOtp(user.getEmail(), otp);
     }
 
     /* =========================================================
