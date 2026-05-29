@@ -307,6 +307,7 @@ public class AuthService {
                 .orElseThrow(() -> new AuthException("User not found"));
 
         user.setActive(false);
+        user.setLastLogoutDate(Instant.now());
         userRepository.save(user);
     }
 
@@ -351,6 +352,7 @@ public class AuthService {
 
         user.setRefreshToken(null);
         user.setRefreshTokenExpiry(null);
+        user.setLastLogoutDate(Instant.now());
         userRepository.save(user);
     }
 

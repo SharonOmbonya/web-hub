@@ -28,15 +28,15 @@ public class AuthController {
     /* ================= PUBLIC ENDPOINTS ================= */
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest request) {
         authService.register(request);
-        return ResponseEntity.ok("User registered");
+        return ResponseEntity.ok(Map.of("message", "User registered"));
     }
 
     @PostMapping("/self-register")
-    public ResponseEntity<String> selfRegister(@Valid @RequestBody SelfRegisterRequest request) {
+    public ResponseEntity<Map<String, String>> selfRegister(@Valid @RequestBody SelfRegisterRequest request) {
         authService.selfRegister(request);
-        return ResponseEntity.ok("Registration successful");
+        return ResponseEntity.ok(Map.of("message", "Registration successful"));
     }
 
     @PostMapping("/login")
@@ -63,8 +63,6 @@ public class AuthController {
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         authService.forgotPassword(request);
-
-        // Returns {"message": "If an account exists, a reset OTP has been sent."}
         return ResponseEntity.ok(Map.of("message", "If an account exists, a reset OTP has been sent."));
     }
 
@@ -75,9 +73,9 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password-with-token")
-    public ResponseEntity<String> resetPasswordWithToken(@Valid @RequestBody ResetPasswordRequest request) {
+    public ResponseEntity<Map<String, String>> resetPasswordWithToken(@Valid @RequestBody ResetPasswordRequest request) {
         authService.resetPasswordWithToken(request);
-        return ResponseEntity.ok("Password has been successfully reset.");
+        return ResponseEntity.ok(Map.of("message", "Password has been successfully reset."));
     }
 
     /* ================= PROTECTED ADMIN ENDPOINTS ================= */
@@ -102,24 +100,24 @@ public class AuthController {
 
     @PatchMapping("/users/{id}/suspend")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> suspendUser(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> suspendUser(@PathVariable Long id) {
         authService.suspendUser(id);
-        return ResponseEntity.ok("User suspended");
+        return ResponseEntity.ok(Map.of("message", "User suspended"));
     }
 
     @PatchMapping("/users/{id}/reset-password")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> resetPassword(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> resetPassword(@PathVariable Long id) {
         authService.resetPassword(id);
-        return ResponseEntity.ok("Password reset by admin");
+        return ResponseEntity.ok(Map.of("message", "Password reset by admin"));
     }
 
     /* ================= PROTECTED USER ENDPOINTS ================= */
 
     @PostMapping("/logout")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> logout(@RequestBody RefreshTokenRequest request) {
+    public ResponseEntity<Map<String, String>> logout(@RequestBody RefreshTokenRequest request) {
         authService.logout(request.refreshToken());
-        return ResponseEntity.ok("Logged out");
+        return ResponseEntity.ok(Map.of("message", "Logged out"));
     }
 }

@@ -1,6 +1,7 @@
 package com.web_hub.web_hub.CorsConfig;
 
 import com.web_hub.web_hub.jwt.JwtService;
+import com.web_hub.web_hub.user.model.User; // Make sure this import points to your custom User entity
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
@@ -51,13 +53,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                boolean isTokenValid = true;
+
+                // 👇 NEW LOGIC: Ensure token was not issued before the user's last logout
+                if (userDetails instanceof User user) {
+                    if (user.getLastLogoutDate() != null) {
+                        Date issueDate = jwtService.extractIssuedAt(jwt);
+
+                        // If the token was generated before the logout timestamp, it's void
+                        if (issueDate != null && issueDate.toInstant().isBefore(user.getLastLogoutDate())) {
+                            isTokenValid = false;
+                        }
+                    }
+                }
+
+                // Only set authentication if the token survived the logout check
+                if (isTokenValid) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
         }
 

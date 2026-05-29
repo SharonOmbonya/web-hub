@@ -53,6 +53,11 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
+    //extracts the token creation date
+    public java.util.Date extractIssuedAt(String token) {
+        return extractClaim(token, io.jsonwebtoken.Claims::getIssuedAt);
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> resolver) {
 
         final Claims claims = Jwts.parserBuilder()
