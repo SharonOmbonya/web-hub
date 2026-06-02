@@ -79,15 +79,15 @@ public class AuthService {
        INVITE USER (ADMIN ONLY)
        ========================================================= */
     public UserResponse createUser(CreateUserRequest request) {
-        userRepository.findByEmailIgnoreCase(request.email())
+        userRepository.findByEmailIgnoreCase(request.email().trim())
                 .ifPresent(u -> {
-                    throw new AuthException("User already exists");
+                    throw new AuthException("User already exists with this email address");
                 });
 
         String inviteToken = UUID.randomUUID().toString();
 
         User user = User.builder()
-                .username(request.email())
+                .username(request.email().toLowerCase().trim())
                 .email(request.email().trim())
                 .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                 .firstName(request.firstName())
@@ -100,12 +100,13 @@ public class AuthService {
                 .role(Role.valueOf(request.role().toUpperCase()))
                 .active(false)
                 .inviteToken(inviteToken)
-                .inviteExpiry(Instant.now().plus(1, ChronoUnit.DAYS))
+                .inviteExpiry(Instant.now().plus(2, java.time.temporal.ChronoUnit.DAYS)) // Aligns with the 48h text in email
                 .forcePasswordChange(true)
                 .build();
 
         userRepository.save(user);
 
+        // ✅ Reverted to your explicit application route
         String link = "http://localhost:3000/auth/set-password?token=" + inviteToken;
         emailService.sendOnboardingInvite(user.getEmail(), link);
 
