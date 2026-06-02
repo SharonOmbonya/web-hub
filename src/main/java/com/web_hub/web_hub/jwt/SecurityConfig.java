@@ -48,7 +48,8 @@ public class SecurityConfig {
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
                                 "/api/auth/verify-email",
-                                "/api/auth/complete-registration"
+                                "/api/auth/complete-registration",
+                                "/api/auth/resend-otp"
                         ).permitAll()
 
                         // Protected Endpoints (From your original config)
