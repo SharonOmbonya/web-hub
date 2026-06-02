@@ -87,9 +87,9 @@ public class EmailService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(to);
-            message.setSubject("Verify Your Email - Apartment Management");
+            message.setSubject("Verify Your Email - Meraki Web Portal");
             message.setText(
-                    "Welcome to Apartment Management 👋\n\n" +
+                    "Welcome to Meraki Web Portal 👋\n\n" +
                             "Your email verification code is:\n\n" +
                             otp + "\n\n" +
                             "This code will expire in 10 minutes.\n\n" +
@@ -118,7 +118,7 @@ public class EmailService {
                     "Hello,\n\n" +
                             "Your tenant account status has been updated to: " + status + ".\n\n" +
                             "If you have any questions, please contact management.\n\n" +
-                            "Regards,\nApartment Management Team"
+                            "Regards,\nMeraki Web Portal Team"
             );
 
             mailSender.send(message);
@@ -189,7 +189,7 @@ public class EmailService {
                             "Good news 🎉\n\n" +
                             "Your employee account has been APPROVED by " + landlordName + ".\n\n" +
                             "You can now log in and start managing assigned properties.\n\n" +
-                            "Regards,\nApartment Management Team"
+                            "Regards,\nMeraki Web Portal Team"
             );
 
             mailSender.send(message);
@@ -215,7 +215,7 @@ public class EmailService {
                             "We regret to inform you that your employee application was NOT approved by "
                             + landlordName + ".\n\n" +
                             "If you believe this was a mistake, please contact management.\n\n" +
-                            "Regards,\nApartment Management Team"
+                            "Regards,\nMeraki Web Portal Team"
             );
 
             mailSender.send(message);
@@ -245,7 +245,7 @@ public class EmailService {
                             "You have been assigned to manage the following property:\n\n" +
                             "🏢 Property: " + propertyName + "\n\n" +
                             "Please log in to the system to view your responsibilities.\n\n" +
-                            "Regards,\nApartment Management Team"
+                            "Regards,\nMeraki Web Portal Team"
             );
 
             mailSender.send(message);
@@ -269,7 +269,7 @@ public class EmailService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(to);
-            message.setSubject("Welcome to Apartment Management");
+            message.setSubject("Welcome to Meraki Web Portal");
             message.setText(
                     "Welcome 👋\n\n" +
                             "Your employee account has been created successfully.\n\n" +
@@ -280,7 +280,7 @@ public class EmailService {
                             "⚠️ IMPORTANT:\n" +
                             "You will be REQUIRED to change your password after logging in.\n\n" +
                             "If you did not expect this email, please contact management.\n\n" +
-                            "Regards,\nApartment Management Team"
+                            "Regards,\nMeraki Web Portal Team"
             );
 
             mailSender.send(message);
@@ -304,12 +304,12 @@ public class EmailService {
             message.setSubject("You're Invited – Complete Your Onboarding");
             message.setText(
                     "Hello 👋\n\n" +
-                            "You have been invited to join Apartment Management.\n\n" +
+                            "You have been invited to join Meraki Web Portal.\n\n" +
                             "👉 Complete your onboarding here:\n" +
                             onboardingUrl + "\n\n" +
                             "⏰ This link expires in 48 hours.\n\n" +
                             "If you did not expect this invitation, please ignore this email.\n\n" +
-                            "Regards,\nApartment Management Team"
+                            "Regards,\nMeraki Web Portal Team"
             );
 
             mailSender.send(message);
@@ -331,7 +331,7 @@ public class EmailService {
                         "Your account has been APPROVED.\n\n" +
                         "Role: " + role + "\n\n" +
                         "You can now set your password and log in.\n\n" +
-                        "Regards,\nApartment Management Team"
+                        "Regards,\nMeraki Web Portal Team"
         );
         mailSender.send(message);
     }
@@ -346,7 +346,7 @@ public class EmailService {
                 "Hello,\n\n" +
                         "Your account request for role " + role + " was rejected.\n\n" +
                         "If you believe this is a mistake, contact support.\n\n" +
-                        "Regards,\nApartment Management Team"
+                        "Regards,\nMeraki Web Portal Team"
         );
         mailSender.send(message);
     }

@@ -106,7 +106,7 @@ public class AuthService {
 
         userRepository.save(user);
 
-        String link = "http://localhost:3000/setup-password?token=" + inviteToken;
+        String link = "http://localhost:3000/auth/set-password?token=" + inviteToken;
         emailService.sendOnboardingInvite(user.getEmail(), link);
 
         return new UserResponse(
