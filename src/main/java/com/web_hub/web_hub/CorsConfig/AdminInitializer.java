@@ -27,8 +27,9 @@ public class AdminInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-        // ✅ Do NOT recreate if already exists
-        if (userRepository.findByEmail(email).isPresent()) {
+        // ✅ Check BOTH email and username to prevent database unique constraint violations
+        if (userRepository.findByEmail(email).isPresent() || userRepository.findByUsername("admin").isPresent()) {
+            System.out.println("ℹ️ Default ADMIN user or username 'admin' already exists. Skipping initialization.");
             return;
         }
 

@@ -8,8 +8,8 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/web_hub
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: smartcode
+  username: postgres
+  password: 1234567@
 
   jpa:
     hibernate:
