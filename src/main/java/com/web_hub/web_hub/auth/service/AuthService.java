@@ -1,7 +1,7 @@
 package com.web_hub.web_hub.auth.service;
 
 
-import com.web_hub.web_hub.admin.CreateUserRequest;
+import com.web_hub.web_hub.admin.InviteUserRequest;
 import com.web_hub.web_hub.admin.UpdateUserRequest;
 import com.web_hub.web_hub.admin.UserResponse;
 import com.web_hub.web_hub.auth.api.dto.ForgotPasswordRequest;
@@ -83,7 +83,7 @@ public class AuthService {
     /* =========================================================
        INVITE USER (ADMIN ONLY)
        ========================================================= */
-    public UserResponse createUser(CreateUserRequest request) {
+    public UserResponse inviteUser(InviteUserRequest request) {
         // 1. Locate the pre-existing Employee record using the request email
         Employee employee = employeeRepository.findByEmail(request.email().trim())
                 .orElseThrow(() -> new ResourceNotFoundException(

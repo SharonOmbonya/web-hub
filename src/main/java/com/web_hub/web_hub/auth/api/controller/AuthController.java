@@ -1,7 +1,7 @@
 package com.web_hub.web_hub.auth.api.controller;
 
 
-import com.web_hub.web_hub.admin.CreateUserRequest;
+import com.web_hub.web_hub.admin.InviteUserRequest;
 import com.web_hub.web_hub.admin.UpdateUserRequest;
 import com.web_hub.web_hub.admin.UserResponse;
 import com.web_hub.web_hub.auth.api.dto.*;
@@ -80,8 +80,8 @@ public class AuthController {
 
     @PostMapping("/invite")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
-        return ResponseEntity.ok(authService.createUser(request));
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid InviteUserRequest request) {
+        return ResponseEntity.ok(authService.inviteUser(request));
     }
 
     @GetMapping("/users")
