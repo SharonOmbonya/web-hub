@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RolesCreateResponseDto {
-    private Long id;
+    private Long roleId;
     private String roleName;
     private List<PermissionResponseDTO> permissions;
 }

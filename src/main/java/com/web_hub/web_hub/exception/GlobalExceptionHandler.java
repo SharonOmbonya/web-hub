@@ -60,7 +60,8 @@ public class GlobalExceptionHandler {
     // 6. DATABASE CONSTRAINTS (e.g., duplicate unique keys like email)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        return buildResponse(HttpStatus.CONFLICT, "Database Conflict", "A record with this data already exists or violates database rules", null);
+        // Passes through your clean service exceptions directly to the JSON response payload
+        return buildResponse(HttpStatus.CONFLICT, "Database Conflict", ex.getMessage(), null);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

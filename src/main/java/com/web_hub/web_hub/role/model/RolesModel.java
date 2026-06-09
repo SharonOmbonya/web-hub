@@ -13,7 +13,8 @@ import java.util.Set;
 public class RolesModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long RoleId;
+    private Long roleId; // ◄ Changed from RoleId to roleId
+
     private String roleName;
 
     @ManyToMany(fetch = FetchType.EAGER)
