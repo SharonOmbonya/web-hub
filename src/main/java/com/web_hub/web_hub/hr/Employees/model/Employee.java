@@ -25,7 +25,10 @@ public class Employee {
     private String kraPin;
     private String identificationNumber;
     private String idType;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private EmployeeStatus status;
+
     private String nationality;
     private String phone;
     private LocalDateTime createdAt;

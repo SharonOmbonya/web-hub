@@ -59,13 +59,21 @@ public class EmployeeController {
     }
 
     /* ================= SUSPEND ================= */
-
     @PatchMapping("/{id}/suspend")
-    public ResponseEntity<String> suspendEmployee(@PathVariable Long id) {
-        employeeService.suspendEmployee(id);
-        return ResponseEntity.ok("Employee suspended");
+    public ResponseEntity<EmployeeResponse> suspendEmployee(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.suspendEmployee(id));
     }
 
+    /* ================= DEACTIVATE ================= */
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<EmployeeResponse> deactivateEmployee(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.deactivateEmployee(id));
+    }
 
+    /* ================= REACTIVATE ================= */
+    @PatchMapping("/{id}/reactivate")
+    public ResponseEntity<EmployeeResponse> reactivateEmployee(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.reactivateEmployee(id));
+    }
 
 }

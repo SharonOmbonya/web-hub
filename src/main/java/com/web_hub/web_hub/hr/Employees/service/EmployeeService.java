@@ -5,8 +5,10 @@ import com.web_hub.web_hub.departments.model.Department;
 import com.web_hub.web_hub.departments.repository.DepartmentRepository;
 import com.web_hub.web_hub.hr.Employees.api.dto.CreateEmployeeRequest;
 import com.web_hub.web_hub.hr.Employees.model.Employee;
+import com.web_hub.web_hub.hr.Employees.model.EmployeeStatus;
 import com.web_hub.web_hub.hr.Employees.repository.EmployeeRepository;
 import com.web_hub.web_hub.hr.Employees.api.dto.EmployeeResponse;
+import com.web_hub.web_hub.exception.ResourceNotFoundException; // 👈 IMPORTED CUSTOM EXCEPTION
 import com.web_hub.web_hub.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,9 +27,9 @@ public class EmployeeService {
 
     /* ================= CREATE ================= */
     public EmployeeResponse createEmployee(CreateEmployeeRequest request) {
-        // Validate uniqueness using Email instead of User
+        // 👇 Changed to IllegalStateException (Caught by your GlobalHandler block #8)
         if (employeeRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("An employee with this email already exists");
+            throw new IllegalStateException("An employee with email '" + request.getEmail() + "' already exists");
         }
 
         Employee employee = new Employee();
@@ -50,7 +52,7 @@ public class EmployeeService {
         employee.setAccountNumber(request.getAccountNumber());
         employee.setKraPin(request.getKraPin());
 
-        employee.setStatus("ACTIVE");
+        employee.setStatus(EmployeeStatus.ACTIVE);
         employee.setCreatedAt(LocalDateTime.now());
 
         Employee saved = employeeRepository.save(employee);
@@ -77,39 +79,67 @@ public class EmployeeService {
 
     /* ================= GET BY ID ================= */
     public EmployeeResponse getEmployeeById(Long id) {
+        // 👇 Changed to ResourceNotFoundException (Caught by your GlobalHandler block #7)
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
 
         return mapToResponse(employee);
     }
 
     /* ================= UPDATE ================= */
     public EmployeeResponse updateEmployee(Long id, CreateEmployeeRequest request) {
+        // 👇 Changed to ResourceNotFoundException
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
 
-        // Validate department from database
-        Department department = departmentRepository.findByName(request.getDepartment())
-                .orElseThrow(() -> new RuntimeException("Invalid or non-existing department"));
+        if (request.getFirstName() != null) {
+            employee.setFirstName(request.getFirstName());
+        }
+        if (request.getLastName() != null) {
+            employee.setLastName(request.getLastName());
+        }
+        if (request.getEmail() != null) {
+            employee.setEmail(request.getEmail());
+        }
+        if (request.getJobTitle() != null) {
+            employee.setJobTitle(request.getJobTitle());
+        }
+        if (request.getPhone() != null) {
+            employee.setPhone(request.getPhone());
+        }
 
-        employee.setFirstName(request.getFirstName());
-        employee.setLastName(request.getLastName());
-        employee.setEmail(request.getEmail());
-        employee.setJobTitle(request.getJobTitle());
-        employee.setDepartment(department.getName());
-        employee.setDepartmentId(request.getDepartmentId());
-        employee.setPhone(request.getPhone());
+        if (request.getDepartment() != null) {
+            // 👇 Changed to ResourceNotFoundException
+            Department department = departmentRepository.findByName(request.getDepartment())
+                    .orElseThrow(() -> new ResourceNotFoundException("Department not found with name: " + request.getDepartment()));
+            employee.setDepartment(department.getName());
+        }
+        if (request.getDepartmentId() != null) {
+            employee.setDepartmentId(request.getDepartmentId());
+        }
 
-        // Update Onboarding / HR fields
-        employee.setStartDate(request.getStartDate());
-        employee.setIdentificationNumber(request.getIdentificationNumber());
-        employee.setIdType(request.getIdType());
-        employee.setNationality(request.getNationality());
+        if (request.getStartDate() != null) {
+            employee.setStartDate(request.getStartDate());
+        }
+        if (request.getIdentificationNumber() != null) {
+            employee.setIdentificationNumber(request.getIdentificationNumber());
+        }
+        if (request.getIdType() != null) {
+            employee.setIdType(request.getIdType());
+        }
+        if (request.getNationality() != null) {
+            employee.setNationality(request.getNationality());
+        }
 
-        // Update Financial / KRA fields
-        employee.setBankName(request.getBankName());
-        employee.setAccountNumber(request.getAccountNumber());
-        employee.setKraPin(request.getKraPin());
+        if (request.getBankName() != null) {
+            employee.setBankName(request.getBankName());
+        }
+        if (request.getAccountNumber() != null) {
+            employee.setAccountNumber(request.getAccountNumber());
+        }
+        if (request.getKraPin() != null) {
+            employee.setKraPin(request.getKraPin());
+        }
 
         Employee updated = employeeRepository.save(employee);
 
@@ -127,8 +157,9 @@ public class EmployeeService {
 
     /* ================= DELETE ================= */
     public void deleteEmployee(Long id) {
+        // 👇 Changed to ResourceNotFoundException
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
 
         employeeRepository.delete(employee);
 
@@ -143,30 +174,75 @@ public class EmployeeService {
     }
 
     /* ================= SUSPEND ================= */
-    public void suspendEmployee(Long id) {
+    public EmployeeResponse suspendEmployee(Long id) {
+        // 👇 Changed to ResourceNotFoundException
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
 
-        employee.setStatus("SUSPENDED");
-        employeeRepository.save(employee);
+        employee.setStatus(EmployeeStatus.SUSPENDED);
+        Employee saved = employeeRepository.save(employee);
 
         auditLogService.logAction(
                 "SUSPEND",
                 "Employee",
-                employee.getId(),
-                employee.getEmail(),
+                saved.getId(),
+                saved.getEmail(),
                 "HR",
                 "Suspended employee account"
         );
+
+        return mapToResponse(saved);
     }
 
     /* ================= GET PROFILE FROM USER ================= */
     public EmployeeResponse getMyProfile(User user) {
-        // Updated to use email lookup to align with the decoupled entity architecture
+        // 👇 Changed to ResourceNotFoundException
         Employee employee = employeeRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new RuntimeException("No employee profile found for email: " + user.getEmail()));
+                .orElseThrow(() -> new ResourceNotFoundException("No employee profile found for email: " + user.getEmail()));
 
         return mapToResponse(employee);
+    }
+
+    /* ================= DEACTIVATE ================= */
+    public EmployeeResponse deactivateEmployee(Long id) {
+        // 👇 Changed to ResourceNotFoundException
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+
+        employee.setStatus(EmployeeStatus.INACTIVE);
+        Employee saved = employeeRepository.save(employee);
+
+        auditLogService.logAction(
+                "DEACTIVATE",
+                "Employee",
+                saved.getId(),
+                saved.getEmail(),
+                "HR",
+                "Deactivated employee account"
+        );
+
+        return mapToResponse(saved);
+    }
+
+    /* ================= REACTIVATE ================= */
+    public EmployeeResponse reactivateEmployee(Long id) {
+        // 👇 Changed to ResourceNotFoundException
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+
+        employee.setStatus(EmployeeStatus.ACTIVE);
+        Employee saved = employeeRepository.save(employee);
+
+        auditLogService.logAction(
+                "REACTIVATE",
+                "Employee",
+                saved.getId(),
+                saved.getEmail(),
+                "HR",
+                "Reactivated employee account"
+        );
+
+        return mapToResponse(saved);
     }
 
     /* ================= MAPPER ================= */
@@ -180,16 +256,13 @@ public class EmployeeService {
                 .jobTitle(employee.getJobTitle())
                 .department(employee.getDepartment())
                 .departmentId(employee.getDepartmentId())
-                .status(employee.getStatus())
+                .status(employee.getStatus() != null ? employee.getStatus().name() : null)
 
-
-                // Onboarding / HR fields
                 .startDate(employee.getStartDate())
                 .identificationNumber(employee.getIdentificationNumber())
                 .idType(employee.getIdType())
                 .nationality(employee.getNationality())
 
-                // Financial / KRA fields
                 .bankName(employee.getBankName())
                 .accountNumber(employee.getAccountNumber())
                 .kraPin(employee.getKraPin())
